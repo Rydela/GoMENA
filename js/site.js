@@ -154,7 +154,7 @@ $.ajax({
 });
 
 //example key figures running off a spreadsheet.
-loadKeyFigures('https://docs.google.com/spreadsheets/d/17uTWEXyefMT4RCgtEaJTrrNYiYv2yFFh7ud_vtUPZ9k/edit?usp=sharing');
+loadKeyFigures('https://docs.google.com/spreadsheets/d/1kZ-ZdZ850S2Lap_jyXEEs9lNnRhGcH30yEFMB6RJ2t8/edit?usp=sharing');
 
 /*
 Here is a few suggestions:
