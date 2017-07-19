@@ -72,7 +72,7 @@ function createAppealsTable(data){
     var html = "";
     data.forEach(function(d,i){
         var url = 'http://ifrcgo.org/appeals/'+d['#meta+id'].toLowerCase()
-        html += '<tr><td><a href="'+url+'" target="_blank">'+d['#crisis+name']+'</a></td><td>'+d['#date+start']+'</td><td>'+d['#date+end']+'</td><td>'+niceFormatNumber(d['#targeted'])+'</td><td>'+niceFormatNumber(d['#meta+value'])+'</td><td>'+niceFormatNumber(d['#meta+funding'])+'</td><td id="coverage'+i+'"></td><td><a href="'+url+'" target="_blank">'+d['#meta+id']+'</a></td></tr>';
+        html += '<tr><td><a href="'+url+'" target="_blank">'+d['#crisis+name']+'</a></td><td>'+d['#date+start']+'</td><td>'+d['#date+end']+'</td><td style="text-align:right">'+niceFormatNumber(d['#targeted'])+'</td><td style="text-align:right">'+niceFormatNumber(d['#meta+value'])+'</td><td style="text-align:right">'+niceFormatNumber(d['#meta+funding'])+'</td><td id="coverage'+i+'"></td><td><a href="'+url+'" target="_blank">'+d['#meta+id']+'</a></td></tr>';
     });
     $('#appealstable').append(html);
     data.forEach(function(d,i){
@@ -124,8 +124,8 @@ appeals.forEach(function(appeal,i){
     hxlAppealString+= '&select-query02-0'+(i+1)+'=%23meta%2Bid%3D'+appeal;
 });
 
-var hxlAppealsCallURL = 'https://proxy.hxlstandard.org/data.json?merge-tags03=%23meta%2Bcoverage%2C%23meta%2Bfunding&filter04=replace-map&replace-map-url04=https%3A//docs.google.com/spreadsheets/d/1hTE0U3V8x18homc5KxfA7IIrv1Y9F1oulhJt0Z4z3zo/edit%3Fusp%3Dsharing&merge-keys05=%23country%2Bname&filter03=merge&url=https%3A//docs.google.com/spreadsheets/d/19pBx2NpbgcLFeWoJGdCqECT2kw9O9_WmcZ3O41Sj4hU/edit%23gid%3D0&merge-url05=https%3A//docs.google.com/spreadsheets/d/1GugpfyzridvfezFcDsl6dNlpZDqI8TQJw-Jx52obny8/edit%3Fusp%3Dsharing&merge-keys03=%23meta%2Bid&filter02=select&filter01=clean&strip-headers=on&clean-date-tags01=%23date&force=on&merge-url03=https%3A//docs.google.com/spreadsheets/d/1rVAE8b3uC_XIqU-eapUGLU7orIzYSUmvlPm9tI0bCbU/edit%23gid%3D0&filter05=merge&merge-tags05=%23country%2Bcode'+hxlAppealString;
-var hxlDocumentsCallURL = 'https://proxy.hxlstandard.org/data.json?filter02=select&strip-headers=on&url=https%3A//docs.google.com/spreadsheets/d/1gJ4N_PYBqtwVuJ10d8zXWxQle_i84vDx5dHNBomYWdU/edit%3Fusp%3Dsharing'+hxlAppealString;
+var hxlAppealsCallURL = 'https://proxy.hxlstandard.org/data.json?filter01=clean&clean-date-tags01=%23date&filter02=select&select-query02-01=%23date%2Bend%3E2016-09-01&filter03=merge&merge-url03=https%3A//docs.google.com/spreadsheets/d/1rVAE8b3uC_XIqU-eapUGLU7orIzYSUmvlPm9tI0bCbU/edit%23gid%3D0&merge-keys03=%23meta%2Bid&merge-tags03=%23meta%2Bcoverage%2C%23meta%2Bfunding&filter04=replace-map&replace-map-url04=https%3A//docs.google.com/spreadsheets/d/1hTE0U3V8x18homc5KxfA7IIrv1Y9F1oulhJt0Z4z3zo/edit%3Fusp%3Dsharing&filter05=merge&merge-url05=https%3A//docs.google.com/spreadsheets/d/1GugpfyzridvfezFcDsl6dNlpZDqI8TQJw-Jx52obny8/edit%3Fusp%3Dsharing&merge-keys05=%23country%2Bname&merge-tags05=%23country%2Bcode&filter06=select&select-query06-01=%23region%3DMiddle+East+and+North+Africa&strip-headers=on&force=on&url=https%3A//docs.google.com/spreadsheets/d/19pBx2NpbgcLFeWoJGdCqECT2kw9O9_WmcZ3O41Sj4hU/edit%23gid%3D0'
+var hxlDocumentsCallURL = 'https://proxy.hxlstandard.org/data.json?filter01=select&select-query01-01=%23country%3DSyria&select-query01-02=%23country%3DJordan&select-query01-03=%23country%3DIraq&select-query01-04=%23country%3DYemen&strip-headers=on&url=https%3A//docs.google.com/spreadsheets/d/1gJ4N_PYBqtwVuJ10d8zXWxQle_i84vDx5dHNBomYWdU/edit%3Fusp%3Dsharing'
 
 $.ajax({
     type: 'GET',
@@ -143,18 +143,13 @@ $.ajax({
     dataType: 'json',
     success:function(response){
         response = hxlProxyToJSON(response);
-        appeals.forEach(function(a){
-            $('#documents').append('<h3 id="appealname'+a+'" class="documenttitle"></h3><table id="documenttable'+a+'"><tr><th>Document</th><th>Country</th><th>Date</th></tr></table>');
+            $('#documents').append('<table id="documenttable"><tr><th style="text-align:left">Document</th><th width="150" style="text-align:left">Country</th><th width="150" style="text-align:left">Date</th></tr></table>');
             response.forEach(function(d){
-                if(d['#meta+id']==a){
-                    $('#appealname'+a).html(d['#meta+appealname']);
                     if(d['#meta+url'].substring(0,1)=='/'){
                         d['#meta+url'] = 'http://www.ifrc.org'+d['#meta+url'];
                     }
-                    $('#documenttable'+a).append('<tr><td><a href="'+d['#meta+url']+'">'+d['#meta+documentname']+'</a></td><td>'+d['#country']+'</td><td>'+d['#date']+'</td></tr>');
-                }
-            });
-        });
+                    $('#documenttable').append('<tr><td><a href="'+d['#meta+url']+'">'+d['#meta+documentname']+'</a></td><td>'+d['#country']+'</td><td>'+d['#date']+'</td></tr>');
+                });
     }
 });
 
